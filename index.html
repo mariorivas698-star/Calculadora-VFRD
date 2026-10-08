@@ -124,12 +124,12 @@ PRODUCTOS.forEach(p=>{const o=document.createElement("option");o.value=o.textCon
 sel.value="Vivienda Renovado";
 
 function calc(){
- const P=parseFloat($("p").value)||0, N=Math.min(60,Math.max(0,Math.floor(parseFloat($("n").value)||0))), prod=sel.value;
+ const P=parseFloat($("p").value)||0, N=Math.max(0,Math.floor(parseFloat($("n").value)||0)), prod=sel.value;
  const anual=buscar(TASAS,prod,P), r=anual/12, tc=buscar(COMISION,prod,P), com=N>0?P*tc/N:0;
  $("cm").textContent=fmt(com);
  const err=$("err");let msg="";
- if(prod.startsWith("Grupo Solidario")&&P>100000) msg="El monto máximo permitido por integrante es 100K. El total del grupo ≤ 300K.";
- else if(!(anual>0)||N<1||P<=0) msg="Monto no válido para este producto. Revisa el capital y el plazo.";
+ if(prod.startsWith("Grupo Solidario")&&P>100000) msg="El monto máximo permitido por integrante es RD$100,000. El total del grupo de deberá superar los RD$300,000.";
+ else if(!(anual>0)||N<1||N>60||P<=0) msg="Monto no válido para este producto. Revisa el capital y/o el plazo.";
  if(msg){err.textContent=msg;err.classList.remove("hide");$("ok").classList.add("hide");$("amort").classList.add("hide");return}
  err.classList.add("hide");$("ok").classList.remove("hide");$("amort").classList.remove("hide");
  const f=Math.pow(1+r,N), cuota=(P*r*f)/(f-1)+com;
