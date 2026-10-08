@@ -5,32 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Calculadora de Préstamo</title>
 <style>
-:root{--bg:#fff6f0;--card:#fff;--ink:#3b2418;--mut:#8a6a5a;--mamey:#e2583e;--mamey2:#f08a5d;--skin:#6b3a2a;--line:#f1d9cc;--hi:#ffe8dc;
+:root{--bg:#ffffff;--card:#ffffff;--ink:#111222;--mut:#5d5f75;--mamey:#FF5515;--mamey2:#FF5515;--skin:#111222;--line:#e4e5ec;--hi:#ffffff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1410;--card:#2b1d17;--ink:#fbe9df;--mut:#c9a593;--line:#4a3228;--hi:#3d2820}}
-:root[data-theme="dark"]{--bg:#1f1410;--card:#2b1d17;--ink:#fbe9df;--mut:#c9a593;--line:#4a3228;--hi:#3d2820}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111222;--card:#1a1b31;--ink:#ffffff;--mut:#aaacc2;--line:#2d2f4a;--hi:#1a1b31}}
+:root[data-theme="dark"]{--bg:#111222;--card:#1a1b31;--ink:#ffffff;--mut:#aaacc2;--line:#2d2f4a;--hi:#1a1b31}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
-header{background:linear-gradient(135deg,var(--mamey),var(--mamey2));color:#fff;padding:22px 18px 46px;text-align:center}
+header{background:var(--mamey);color:#fff;padding:22px 18px 46px;text-align:center}
 header h1{margin:0;font-size:1.35rem;letter-spacing:.5px}
 header p{margin:4px 0 0;opacity:.92;font-size:.9rem}
 main{max-width:640px;margin:-30px auto 24px;padding:0 14px}
-.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(107,58,42,.12)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(17,18,34,.10)}
 h2{margin:0 0 12px;font-size:.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--skin)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h2{color:var(--mamey2)}}
 :root[data-theme="dark"] h2{color:var(--mamey2)}
 label{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
 input,select{width:100%;font-size:1.05rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-family:inherit}
 input:focus,select:focus{outline:2px solid var(--mamey);border-color:var(--mamey)}
-.row{display:flex;gap:10px;margin-top:12px}.row>div{flex:1;background:var(--hi);border-radius:12px;padding:10px}
+.row{display:flex;gap:10px;margin-top:12px}.row>div{flex:1;background:var(--hi);border:1px solid var(--line);border-radius:12px;padding:10px}
 .row small{display:block;color:var(--mut);font-size:.75rem}.row b{font-size:1.05rem}
 .big{text-align:center;padding:8px 0}
 .big small{color:var(--mut);letter-spacing:1px;font-size:.78rem}
 .big .v{font-size:2.1rem;font-weight:800;color:var(--mamey);margin:4px 0}
 .err{background:var(--hi);border-left:4px solid var(--mamey);padding:12px;border-radius:8px;font-weight:600}
 .sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;text-align:center}
-.sum div{background:var(--hi);border-radius:12px;padding:8px 4px}
+.sum div{background:var(--hi);border:1px solid var(--line);border-radius:12px;padding:8px 4px}
 .sum small{display:block;color:var(--mut);font-size:.7rem}.sum b{font-size:.85rem}
 .wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:10px;border:1px solid var(--line)}
 table{border-collapse:collapse;width:100%;min-width:430px;font-size:.82rem;font-variant-numeric:tabular-nums}
@@ -44,7 +44,7 @@ footer{text-align:center;color:var(--mut);font-size:.75rem;padding:0 14px 20px}
 </style>
 </head>
 <body>
-<header><h1>CALCULADORA DE PRÉSTAMO</h1><p>VisionFund República Dominicana</p></header>
+<header><h1>CALCULADORA DE PRÉSTAMO</h1><p>VisionFund República Dominicana</p><p>Ver. 03</p></header>
 <main>
 <section class="card">
 <h2>Datos del préstamo</h2>
@@ -55,8 +55,6 @@ footer{text-align:center;color:var(--mut);font-size:.75rem;padding:0 14px 20px}
 <label for="t">Tipo de producto</label>
 <select id="t"></select>
 <div class="row">
-<div><small>Tasa anual</small><b id="ta">–</b></div>
-<div><small>Tasa mensual</small><b id="tm">–</b></div>
 <div><small>Comisión mensual</small><b id="cm">–</b></div>
 </div>
 </section>
@@ -85,7 +83,6 @@ footer{text-align:center;color:var(--mut);font-size:.75rem;padding:0 14px 20px}
 </div>
 </section>
 </main>
-<footer>Cálculos de referencia. Tasa anual dividida entre 12; comisión = capital × tasa de comisión ÷ plazo.</footer>
 
 <script>
 const PRODUCTOS=["Grupo Solidario Nuevo","Grupo Solidario Renovado","Microempresa Individual Nuevo","Microempresa Individual Renovado","Pequeña Empresa Nuevo","Pequeña Empresa Renovado","Agroempresa Nuevo","Agroempresa Renovado","Vivienda Nuevo","Vivienda Renovado","Educativo Renovado","Edify Nuevo/Renovado"];
@@ -129,12 +126,10 @@ sel.value="Vivienda Renovado";
 function calc(){
  const P=parseFloat($("p").value)||0, N=Math.min(60,Math.max(0,Math.floor(parseFloat($("n").value)||0))), prod=sel.value;
  const anual=buscar(TASAS,prod,P), r=anual/12, tc=buscar(COMISION,prod,P), com=N>0?P*tc/N:0;
- $("ta").textContent=(anual*100).toFixed(2)+"%";
- $("tm").textContent=(r*100).toFixed(2)+"%";
  $("cm").textContent=fmt(com);
  const err=$("err");let msg="";
- if(prod.startsWith("Grupo Solidario")&&P>100000) msg="El monto máximo permitido por integrante es de RD$100,000. El total del grupo no podrá superar los RD$300,000.";
- else if(!(anual>0)||N<1||P<=0) msg="Monto no válido para este producto. Revisa el capital y/o el plazo.";
+ if(prod.startsWith("Grupo Solidario")&&P>100000) msg="El monto máximo permitido por integrante es 100K. El total del grupo ≤ 300K.";
+ else if(!(anual>0)||N<1||P<=0) msg="Monto no válido para este producto. Revisa el capital y el plazo.";
  if(msg){err.textContent=msg;err.classList.remove("hide");$("ok").classList.add("hide");$("amort").classList.add("hide");return}
  err.classList.add("hide");$("ok").classList.remove("hide");$("amort").classList.remove("hide");
  const f=Math.pow(1+r,N), cuota=(P*r*f)/(f-1)+com;
