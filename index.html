@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de Préstamo</title>
+<style>
+:root{--bg:#fff6f0;--card:#fff;--ink:#3b2418;--mut:#8a6a5a;--mamey:#e2583e;--mamey2:#f08a5d;--skin:#6b3a2a;--line:#f1d9cc;--hi:#ffe8dc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1410;--card:#2b1d17;--ink:#fbe9df;--mut:#c9a593;--line:#4a3228;--hi:#3d2820}}
+:root[data-theme="dark"]{--bg:#1f1410;--card:#2b1d17;--ink:#fbe9df;--mut:#c9a593;--line:#4a3228;--hi:#3d2820}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+header{background:linear-gradient(135deg,var(--mamey),var(--mamey2));color:#fff;padding:22px 18px 46px;text-align:center}
+header h1{margin:0;font-size:1.35rem;letter-spacing:.5px}
+header p{margin:4px 0 0;opacity:.92;font-size:.9rem}
+main{max-width:640px;margin:-30px auto 24px;padding:0 14px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(107,58,42,.12)}
+h2{margin:0 0 12px;font-size:.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--skin)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h2{color:var(--mamey2)}}
+:root[data-theme="dark"] h2{color:var(--mamey2)}
+label{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
+input,select{width:100%;font-size:1.05rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-family:inherit}
+input:focus,select:focus{outline:2px solid var(--mamey);border-color:var(--mamey)}
+.row{display:flex;gap:10px;margin-top:12px}.row>div{flex:1;background:var(--hi);border-radius:12px;padding:10px}
+.row small{display:block;color:var(--mut);font-size:.75rem}.row b{font-size:1.05rem}
+.big{text-align:center;padding:8px 0}
+.big small{color:var(--mut);letter-spacing:1px;font-size:.78rem}
+.big .v{font-size:2.1rem;font-weight:800;color:var(--mamey);margin:4px 0}
+.err{background:var(--hi);border-left:4px solid var(--mamey);padding:12px;border-radius:8px;font-weight:600}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;text-align:center}
+.sum div{background:var(--hi);border-radius:12px;padding:8px 4px}
+.sum small{display:block;color:var(--mut);font-size:.7rem}.sum b{font-size:.85rem}
+.wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:10px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:430px;font-size:.82rem;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:var(--mamey);color:#fff;padding:8px 6px;text-align:right}
+td{padding:7px 6px;text-align:right;border-top:1px solid var(--line)}
+th:first-child,td:first-child{text-align:center}
+tbody tr:nth-child(even){background:var(--hi)}
+tfoot td{font-weight:700;background:var(--hi);position:sticky;bottom:0}
+.hide{display:none}
+footer{text-align:center;color:var(--mut);font-size:.75rem;padding:0 14px 20px}
+</style>
+</head>
+<body>
+<header><h1>CALCULADORA DE PRÉSTAMO</h1><p>VisionFund República Dominicana</p></header>
+<main>
+<section class="card">
+<h2>Datos del préstamo</h2>
+<label for="p">Capital (RD$)</label>
+<input id="p" type="number" inputmode="decimal" value="100000" min="0">
+<label for="n">Plazo (meses, máx. 60)</label>
+<input id="n" type="number" inputmode="numeric" value="44" min="1" max="60">
+<label for="t">Tipo de producto</label>
+<select id="t"></select>
+<div class="row">
+<div><small>Tasa anual</small><b id="ta">–</b></div>
+<div><small>Tasa mensual</small><b id="tm">–</b></div>
+<div><small>Comisión mensual</small><b id="cm">–</b></div>
+</div>
+</section>
+
+<section class="card">
+<h2>Resumen del préstamo</h2>
+<div id="err" class="err hide"></div>
+<div id="ok">
+<div class="big"><small>CUOTA MENSUAL</small><div class="v" id="cuota">–</div></div>
+<div class="sum">
+<div><small>Total capital</small><b id="sc">–</b></div>
+<div><small>Total interés</small><b id="si">–</b></div>
+<div><small>Total comisión</small><b id="sm">–</b></div>
+</div>
+</div>
+</section>
+
+<section class="card" id="amort">
+<h2>Cuadro de amortización</h2>
+<div class="wrap">
+<table>
+<thead><tr><th>Cuota</th><th>Capital</th><th>Interés</th><th>Comisión</th><th>Balance</th></tr></thead>
+<tbody id="tb"></tbody>
+<tfoot><tr><td>Total</td><td id="fc"></td><td id="fi"></td><td id="fm"></td><td></td></tr></tfoot>
+</table>
+</div>
+</section>
+</main>
+<footer>Cálculos de referencia. Tasa anual dividida entre 12; comisión = capital × tasa de comisión ÷ plazo.</footer>
+
+<script>
+const PRODUCTOS=["Grupo Solidario Nuevo","Grupo Solidario Renovado","Microempresa Individual Nuevo","Microempresa Individual Renovado","Pequeña Empresa Nuevo","Pequeña Empresa Renovado","Agroempresa Nuevo","Agroempresa Renovado","Vivienda Nuevo","Vivienda Renovado","Educativo Renovado","Edify Nuevo/Renovado"];
+// [min,max,valor]
+const TASAS={
+"Microempresa Individual Nuevo":[[5001,20000,.41],[20001,50000,.41],[50001,100000,.39],[100001,250000,.34]],
+"Pequeña Empresa Nuevo":[[250001,300000,.32],[300001,1000000,.32]],
+"Agroempresa Nuevo":[[10001,50000,.41],[50001,100000,.39],[100001,300000,.32],[300001,500000,.32]],
+"Vivienda Nuevo":[[10001,50000,.41],[50001,100000,.39],[100001,250000,.34],[250001,300000,.32],[300001,500000,.32]],
+"Vivienda Renovado":[[10001,50000,.36],[50001,100000,.36],[100001,250000,.34],[250001,300000,.32],[300001,500000,.30]],
+"Educativo Renovado":[[10000,50000,.30]],
+"Edify Nuevo/Renovado":[[50000,50000,.18],[50001,100000,.17],[100001,150000,.16],[150001,500000,.15]],
+"Grupo Solidario Nuevo":[[3000,100000,.41]],
+"Grupo Solidario Renovado":[[3000,100000,.38]],
+"Microempresa Individual Renovado":[[5001,20000,.38],[20001,100000,.36],[100001,250000,.34]],
+"Pequeña Empresa Renovado":[[250001,300000,.32],[300001,1000000,.30]],
+"Agroempresa Renovado":[[10001,50000,.36],[50001,100000,.35],[100001,300000,.32],[300001,500000,.32]]
+};
+const COMISION={
+"Microempresa Individual Nuevo":[[5001,50000,.09],[50001,250000,.08]],
+"Microempresa Individual Renovado":[[5001,50000,.09],[50001,250000,.08]],
+"Pequeña Empresa Nuevo":[[250001,300000,.04],[300001,1000000,.02]],
+"Pequeña Empresa Renovado":[[250001,300000,.04],[300001,1000000,.02]],
+"Agroempresa Nuevo":[[10001,50000,.09],[50001,100000,.08],[100001,500000,.04]],
+"Agroempresa Renovado":[[10001,50000,.09],[50001,100000,.08],[100001,500000,.04]],
+"Vivienda Nuevo":[[10001,50000,.09],[50001,250000,.08],[250001,300000,.04],[300001,500000,.02]],
+"Vivienda Renovado":[[10001,50000,.09],[50001,250000,.08],[250001,300000,.04],[300001,500000,.02]],
+"Educativo Renovado":[[10000,50000,0]],
+"Edify Nuevo/Renovado":[[50000,500000,.04]],
+"Grupo Solidario Nuevo":[[3000,100000,.09]],
+"Grupo Solidario Renovado":[[3000,100000,.09]]
+};
+const buscar=(tab,prod,m)=>{for(const[a,b,v]of(tab[prod]||[]))if(m>=a&&m<=b)return v;return 0};
+const $=id=>document.getElementById(id);
+const fmt=x=>"RD$ "+x.toLocaleString("es-DO",{minimumFractionDigits:2,maximumFractionDigits:2});
+const num=x=>x.toLocaleString("es-DO",{minimumFractionDigits:2,maximumFractionDigits:2});
+const sel=$("t");
+PRODUCTOS.forEach(p=>{const o=document.createElement("option");o.value=o.textContent=p;sel.appendChild(o)});
+sel.value="Vivienda Renovado";
+
+function calc(){
+ const P=parseFloat($("p").value)||0, N=Math.min(60,Math.max(0,Math.floor(parseFloat($("n").value)||0))), prod=sel.value;
+ const anual=buscar(TASAS,prod,P), r=anual/12, tc=buscar(COMISION,prod,P), com=N>0?P*tc/N:0;
+ $("ta").textContent=(anual*100).toFixed(2)+"%";
+ $("tm").textContent=(r*100).toFixed(2)+"%";
+ $("cm").textContent=fmt(com);
+ const err=$("err");let msg="";
+ if(prod.startsWith("Grupo Solidario")&&P>100000) msg="El monto máximo permitido por integrante es 100K. El total del grupo ≤ 300K.";
+ else if(!(anual>0)||N<1||P<=0) msg="Monto no válido para este producto. Revisa el capital y el plazo.";
+ if(msg){err.textContent=msg;err.classList.remove("hide");$("ok").classList.add("hide");$("amort").classList.add("hide");return}
+ err.classList.add("hide");$("ok").classList.remove("hide");$("amort").classList.remove("hide");
+ const f=Math.pow(1+r,N), cuota=(P*r*f)/(f-1)+com;
+ $("cuota").textContent=fmt(cuota);
+ let bal=P,tC=0,tI=0,tM=0,html="";
+ for(let k=1;k<=60;k++){
+  if(k>1&&bal<1)break;
+  const i=bal*r, c=cuota-i-com; bal=bal-c;
+  tC+=c;tI+=i;tM+=com;
+  html+=`<tr><td>${k}</td><td>${num(c)}</td><td>${num(i)}</td><td>${num(com)}</td><td>${num(Math.max(bal,0)<0.005?0:bal)}</td></tr>`;
+ }
+ $("tb").innerHTML=html;
+ $("sc").textContent=fmt(tC);$("si").textContent=fmt(tI);$("sm").textContent=fmt(tM);
+ $("fc").textContent=num(tC);$("fi").textContent=num(tI);$("fm").textContent=num(tM);
+}
+["p","n"].forEach(id=>$(id).addEventListener("input",calc));
+sel.addEventListener("change",calc);
+calc();
+</script>
+</body>
+</html>
